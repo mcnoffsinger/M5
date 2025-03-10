@@ -4,12 +4,125 @@
       Chapter Case
 
       Application to generate a slide show
-      Author: 
-      Date:   
+      Author: Maxwell Noffsinger
+      Date:   3/10/24
 
       Filename: js05.js
 */
+window.addEventListener("load",createLightBox)
+function createLightBox() {
+   let lightBox = document.getElementById("lightbox");
 
+   let lbTitle = document.createElement("h1")
+   let lbCounter = document.createElement("div")
+   let lbPrev = document.createElement("div")
+   let lbNext = document.createElement("div")
+   let lbPlay = document.createElement("div")
+   let lbImages = document.createElement("div")
+
+   lightBox.appendChild(lbTitle)
+   lbTitle.id = "lbTitle"
+
+   lbTitle.textContent = lightboxTitle;
+
+   
+
+   lightBox.appendChild(lbCounter)
+   lbCounter.id = "lbCounter"
+   let currentImg = 1
+   lbCounter.textContent = currentImg + " / " + imgCount;
+
+   lightBox.appendChild(lbCounter)
+   lbCounter.id = "lbCounter"
+
+   lightBox.appendChild(lbPrev)
+   lbPrev.id = "lbPrev"
+   lbPrev.innerHTML = "&#9664;";
+   lbPrev.onclick = showPrev;
+
+   lightBox.appendChild(lbNext)
+   lbNext.id = "lbNext"
+   lbNext.innerHTML = "&#9654;"
+   lbNext.onclick = showNext;
+
+   lightBox.appendChild(lbPlay)
+   lbPlay.id = "lbPlay"
+   lbPlay.innerHTML = "&#9199"
+   let timeID = undefined
+   lbPlay.onclick = function(){
+      if (timeID) {
+         window.clearInterval(timeID);
+         timeID = undefined
+
+      }else {
+         showNext();
+         timeID = window.setInterval(showNext,500)
+      }
+
+   }
+
+
+
+
+   lightBox.appendChild(lbImages)
+   lbImages.id = "lbImages"
+
+   for (let i = 0;i<imgCount; i++){
+      let image = document.createElement("img");
+      image.src= imgFiles[i];
+      image.alt = imgCaptions[i];
+      image.onclick = createOverlay//()  // NNNNNNNNNPOOOO PARNETHESES DANG IT MASX
+      lbImages.appendChild(image)
+      
+   }
+   function showNext(){
+      lbImages.appendChild(lbImages.firstElementChild);
+      (currentImg < imgCount) ? currentImg++ : currentImg = 1;
+      lbCounter.textContent = currentImg + " / " + imgCount;
+   }
+   function showPrev(){
+      lbImages.insertBefore(lbImages.lastElementChild, lbImages.firstElementChild);
+      (currentImg > 1) ? currentImg-- : currentImg = imgCount;
+      lbCounter.textContent = currentImg + " / " + imgCount;
+
+   }
+   function createOverlay(){
+      let overlay = document.createElement("div");
+      overlay.id = "lbOverlay";
+
+      let figureBox = document.createElement("figure");
+      overlay.appendChild(figureBox);
+      
+      
+
+      let overlayImage = this.cloneNode("true");
+      figureBox.appendChild(overlayImage);
+
+      let overlayCaption = document.createElement("figcaption");
+      overlayCaption.textContent = this.alt;
+      figureBox.appendChild(overlayCaption);
+
+      let closeBox = document.createElement("div");
+      closeBox.id = "lbOverlayClose";
+      closeBox.innerHTML = "&times;";
+
+      closeBox.onclick = function(){
+         document.body.removeChild(overlay)
+      }
+      overlay.appendChild(closeBox)
+
+
+
+      document.body.appendChild(overlay);
+
+
+
+
+      
+   }
+
+
+}
 window.addEventListener("load", setupGallery);
 
 function setupGallery() {
